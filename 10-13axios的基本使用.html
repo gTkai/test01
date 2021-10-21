@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <button id="btn">发起</button>
+    <button id="btn1">发起1</button>
+    <button id="btn2">发起2</button>
+    <button id="btn3">发起3</button>
+
+
+    <script src="js/axios.min.js"></script>
+    <script>
+        var data = { id: 1, bookname: '西游记' }
+        document.querySelector('#btn').onclick = function () {
+            axios.get('http://www.liulongbin.top:3006/api/getbooks', { params: data }).then(function (res) {
+                console.log(res.data);
+            })
+        }
+        document.querySelector('#btn1').onclick = function () {
+            axios.post('http://www.liulongbin.top:3006/api/post', { location: 'ad', address: 'cc' }).then(function (res) {
+                console.log(res.data);
+            })
+        }
+        document.querySelector('#btn2').onclick = function () {
+            axios({
+                method: 'GET',
+                url: 'http://www.liulongbin.top:3006/api/get',
+                params: {
+                    id: 1,
+                    bookname: '西游记'
+                }
+            }).then(function (res) {
+                console.log(res.data)
+            })
+        }
+        document.querySelector('#btn3').onclick = function () {
+            axios({
+                method: 'post',
+                url: 'http://www.liulongbin.top:3006/api/post',
+                data: {
+                    location: 'ad',
+                    address: 'cc'
+                }
+            }).then(function (res) {
+                console.log(res.data)
+            })
+        }
+    </script>
+</body>
+
+</html>

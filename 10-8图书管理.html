@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+</head>
+
+<body style="padding: 15px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加图书</h3>
+        </div>
+        <div class="panel-body form-inline">
+            <div class="input-group">
+                <div class="input-group-addon">书名</div>
+                <input type="text" class="form-control" id="iptBookname" placeholder="请输入书名">
+            </div>
+            <div class="input-group">
+                <div class="input-group-addon">作者</div>
+                <input type="text" class="form-control" id="iptAuthor" placeholder="请输入作者">
+            </div>
+            <div class="input-group">
+                <div class="input-group-addon">出版社</div>
+                <input type="text" class="form-control" id="iptPublisher" placeholder="请输入出版社">
+            </div>
+            <button id="butAdd" class="but but-primary">添加</button>
+        </div>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <th>ID</th>
+            <th>书名</th>
+            <th>作者</th>
+            <th>出版社</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="tb">
+
+        </tbody>
+    </table>
+    <script src="./jquery-3.6.0.js"></script>
+    <script>
+        let baseURL = 'http://www.liulongbin.top:3006'
+        function getBookList() {
+            $.get(baseURL + '/api/getbooks', function (res) {
+                if (res.status != 200) return alert('获取数据失败')
+                var row = []
+                $.each(res.data, function (i, item) {
+                    row.push(`<tr>
+                    <td> ${item.id}</td>
+                    <td>${item.bookname}</td>
+                    <td>${item.author}</td>
+                    <td>${item.publisher}</td>
+                    <td><button class="del">删除</button></td>
+                    </tr>`)
+                })
+                $('#tb').empty().append(row.join(''))
+
+            })
+        }
+
+        $('#butAdd').click(function () {
+            var bookname = $('#iptBookname').val().trim()
+            var author = $('#iptAuthor').val().trim()
+            var publisher = $('#iptPublisher').val().trim()
+            if (bookname.length < 0 || author.length < 0 || publisher.length < 0) {
+                return alert('请填写完整的图书信息')
+            }
+            $.post(
+                baseURL + '/api/addbook',
+                { bookname: bookname, author: author, publisher: publisher },
+                function (res) {
+                    if (res.status !== 201) return alert('添加图书失败！')
+                    getBookList() 
+                    $('input:text').val('')
+                }
+
+            )
+
+        })
+        $('tbody').on('click', 'del', function () {
+            var n = $(this).attr('data-id')
+            console.log(123);
+            $.ajax({ 
+                type: 'GET',
+                url: baseURL+'/api/delbook',
+                data: { id: n },
+                success: function (res) {
+                    if (res.status !== 200) return alert('删除图书失败！')
+                    getBookList()
+                }
+            })
+
+        })
+
+    </script>
+</body>
+
+</html>
